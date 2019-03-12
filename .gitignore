@@ -8,3 +8,5 @@ build/
 /build-win32-noconsole/
 /build-win64/
 /build-win64-noconsole/
+/release-*/
+/build_release/

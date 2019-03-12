@@ -1,9 +1,9 @@
-MirallDroid is a fork based on SCRCPY available [here]: (https://github.com/Genymobile/scrcpy)
+MirallDroid is a fork based on SCRCPY available https://github.com/Genymobile/scrcpy
 
 # miralldroid (v1.0)
 
 This application provides display and control of Android devices connected on
-USB (or [over TCP/IP][article-tcpip]). It does not require any _root_ access.
+USB (or over TCP/IP). It does not require any _root_ access.
 It works on _GNU/Linux_, _Windows_ and _MacOS_.
 
 ![screenshot1](assets/screenshots/screenshot_win10.jpg) ![screenshot2](assets/screenshots/screenshot_ubuntu18_10.jpg)
@@ -37,13 +37,13 @@ it's not that hard.
 For Windows, for simplicity, prebuilt archives with all the dependencies
 (including `adb`) are available:
 
+ - [`miralldroid-win64-v1.0.zip`][direct-win64]
+   _(SHA-256: a6354c9b3814c9dc734f720b83948c495e0e7afe378a867a870393d14f1b4392)_
  - [`miralldroid-win32-v1.0.zip`][direct-win32]  
    _(SHA-256: 44d58bc982c5f551686c39c565b5ba49b7246690e1f8fa505ec8086f3d8035db)_
- - [`miralldroid-win64-v1.0.zip`][direct-win64]  
-   _(SHA-256: a6354c9b3814c9dc734f720b83948c495e0e7afe378a867a870393d14f1b4392)_
 
-[direct-win32]: https://github.com/DANIELVISPOBLOG/miralldroid/releases/download/v1.0/miralldroid-win32-v1.0.zip
 [direct-win64]: https://github.com/DANIELVISPOBLOG/miralldroid/releases/download/v1.0/miralldroid-win64-v1.0.zip
+[direct-win32]: https://github.com/DANIELVISPOBLOG/miralldroid/releases/download/v1.0/miralldroid-win32-v1.0.zip
 
 You can also [build the app manually][BUILD].
 
