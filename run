@@ -1,0 +1,23 @@
+#!/bin/bash
+# Run miralldroid generated in the specified BUILDDIR.
+#
+# This provides the same feature as "ninja run", except that it is possible to
+# pass arguments to miralldroid.
+#
+# Syntax: ./run BUILDDIR <miralldroid options ...>
+if [[ $# = 0 ]]
+then
+    echo "Syntax: $0 BUILDDIR <miralldroid options>" >&2
+    exit 1
+fi
+
+BUILDDIR="$1"
+shift
+
+if [[ ! -d "$BUILDDIR" ]]
+then
+    echo "The build dir \"$BUILDDIR\" does not exist." >&2
+    exit 1
+fi
+
+MIRALLDROID_SERVER_PATH="$BUILDDIR/server/miralldroid-server.jar" MIRALLDROID_FONT_PATH="./assets/fonts/fonts.ttf" "$BUILDDIR/app/miralldroid" "$@"

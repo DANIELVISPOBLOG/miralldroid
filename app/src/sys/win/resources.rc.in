@@ -1,0 +1,28 @@
+#define VFT_APP             0x00000001L
+#define US_ENGLISH_MULTI    "040904E4"
+
+1 ICON @APP_ICON_PATH@
+1 VERSIONINFO
+FILEVERSION @MIRALLDROID_VERSION_MAJOR@, @MIRALLDROID_VERSION_MINOR@, 0, 0
+FILETYPE VFT_APP
+{
+ BLOCK "StringFileInfo"
+ {
+  BLOCK US_ENGLISH_MULTI
+  {
+   VALUE "CompanyName", "https://www.vispo.org\000"
+   VALUE "FileDescription", "Remote controlling an Android Device from your PC\000"
+   VALUE "FileVersion", "@MIRALLDROID_VERSION_MAJOR@.@MIRALLDROID_VERSION_MINOR@.0.0\000"
+   VALUE "InternalName", "miralldroid\000"
+   VALUE "LegalCopyright", "Copyright \251 https://www.vispo.org (Daniel Vispo). All rights reserved.\000"
+   VALUE "OriginalFilename", "miralldroid.exe\000"
+   VALUE "ProductName", "MirallDroid\000"
+   VALUE "ProductVersion", "@MIRALLDROID_VERSION_MAJOR@.@MIRALLDROID_VERSION_MINOR@.0.0\000"
+   
+  }
+ }
+ BLOCK "VarFileInfo"
+ {
+  VALUE "Translation", 1033, 1252
+ }
+}
