@@ -133,8 +133,13 @@ It is possible to record the screen while mirroring:
 
 ```bash
 miralldroid --record file.mp4
+miralldroid --record file.mkv
 miralldroid -r file.mp4
+miralldroid -r file.mkv
 ```
+
+2 Video file formats are accepted: Matroska (MKV) or MP4. If no valid extension
+specified, MP4 will be the video file format by default.
 
 "Skipped frames" are recorded, even if they are not displayed in real time (for
 performance reasons). Frames are _timestamped_ on the device, so [packet delay
@@ -165,6 +170,17 @@ miralldroid -f  # short version
 ```
 
 Fullscreen can then be toggled dynamically with `Ctrl`+`f`.
+
+
+### Always on top
+
+The window of app can always be above others by:
+
+```bash
+miralldroid --always-on-top
+miralldroid -T  # short version
+```
+
 
 ### OnScreen Menus
 

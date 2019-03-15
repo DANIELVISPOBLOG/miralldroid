@@ -6,8 +6,10 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
+#include "compat.h"
 #include "config.h"
 #include "log.h"
+#include "recorder.h"
 
 struct args {
     const char *serial;
@@ -21,6 +23,7 @@ struct args {
     Uint16 port;
     Uint16 max_size;
     Uint32 bit_rate;
+    SDL_bool always_on_top;
 };
 
 static void usage(const char *arg0) {
@@ -60,7 +63,11 @@ static void usage(const char *arg0) {
         "        Default is %d.\n"
         "\n"
         "    -r, --record file.mp4\n"
-        "        Record screen to file.\n"
+        "        Record screen to file (MP4 video file format).\n"
+        "    -r, --record file.mkv\n"
+        "        Record screen to file (Matroska video file format).\n\n"
+        "        The format is determined by the file extension (.mp4 or .mkv).\n"
+        "        If ivalid file extension specified by default will be MP4."
         "\n"
         "    -s, --serial\n"
         "        The device serial number. Mandatory only if several devices\n"
@@ -69,6 +76,9 @@ static void usage(const char *arg0) {
         "    -t, --show-touches\n"
         "        Enable \"show touches\" on start, disable on quit.\n"
         "        It only shows physical touches (not clicks from miralldroid).\n"
+        "\n"
+        "    -T, --always-on-top\n"
+        "        Makes miralldroid window always on top (above other windows).\n"
         "\n"
         "    -v, --version\n"
         "        Print the version of miralldroid.\n"
@@ -213,6 +223,25 @@ static SDL_bool parse_port(char *optarg, Uint16 *port) {
     return SDL_TRUE;
 }
 
+static enum recorder_format
+guess_record_format(const char *filename) {
+    if (filename == NULL) return 0;
+    size_t len = strlen(filename);
+    if (len < 4) {
+        LOGI("Invalid video file format specified for \"%s\" (By default will be mp4)",filename);
+        return RECORDER_FORMAT_MP4;
+    }
+    const char *ext = &filename[len - 4];
+    if (!strcmp(ext, ".mp4")) {
+        return RECORDER_FORMAT_MP4;
+    }
+    if (!strcmp(ext, ".mkv")) {
+        return RECORDER_FORMAT_MKV;
+    }
+    LOGI("Invalid video file format specified for \"%s\" (By default will be mp4)",filename);
+    return RECORDER_FORMAT_MP4;
+}
+
 static SDL_bool parse_args(struct args *args, int argc, char *argv[]) {
     static const struct option long_options[] = {
         {"bit-rate",           required_argument, NULL, 'b'},
@@ -225,11 +254,12 @@ static SDL_bool parse_args(struct args *args, int argc, char *argv[]) {
         {"record",             required_argument, NULL, 'r'},
         {"serial",             required_argument, NULL, 's'},
         {"show-touches",       no_argument,       NULL, 't'},
+        {"always-on-top",      no_argument,       NULL, 'T'},
         {"version",            no_argument,       NULL, 'v'},
         {NULL,                 0,                 NULL, 0  },
     };
     int c;
-    while ((c = getopt_long(argc, argv, "b:c:fnhm:p:r:s:tv", long_options, NULL)) != -1) {
+    while ((c = getopt_long(argc, argv, "b:c:fnhm:p:r:s:tTv", long_options, NULL)) != -1) {
         switch (c) {
             case 'b':
                 if (!parse_bit_rate(optarg, &args->bit_rate)) {
@@ -267,6 +297,9 @@ static SDL_bool parse_args(struct args *args, int argc, char *argv[]) {
             case 't':
                 args->show_touches = SDL_TRUE;
                 break;
+            case 'T':
+                args->always_on_top = SDL_TRUE;
+                break;
             case 'v':
                 args->version = SDL_TRUE;
                 break;
@@ -281,6 +314,7 @@ static SDL_bool parse_args(struct args *args, int argc, char *argv[]) {
         LOGE("Unexpected additional argument: %s", argv[index]);
         return SDL_FALSE;
     }
+
     return SDL_TRUE;
 }
 
@@ -299,6 +333,7 @@ int main(int argc, char *argv[]) {
         .help = SDL_FALSE,
         .version = SDL_FALSE,
         .show_touches = SDL_FALSE,
+        .always_on_top = SDL_FALSE,
         .port = DEFAULT_LOCAL_PORT,
         .max_size = DEFAULT_MAX_SIZE,
         .bit_rate = DEFAULT_BIT_RATE,
@@ -317,7 +352,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(58, 9, 100)
+#ifdef MIRALLDROID_LAVF_REQUIRES_REGISTER_ALL
     av_register_all();
 #endif
 
@@ -334,9 +369,11 @@ int main(int argc, char *argv[]) {
         .crop = args.crop,
         .port = args.port,
         .record_filename = args.record_filename,
+        .record_format = guess_record_format(args.record_filename),
         .max_size = args.max_size,
         .bit_rate = args.bit_rate,
         .show_touches = args.show_touches,
+        .always_on_top = args.always_on_top,
         .fullscreen = args.fullscreen,
         .onscreen_menus = args.onscreen_menus
     };

@@ -1,5 +1,5 @@
 project('miralldroid', 'c',
-        version: '1.0',
+        version: '1.1',
         meson_version: '>= 0.37',
         default_options: 'c_std=c11')
 
